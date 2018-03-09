@@ -44,7 +44,7 @@ static void do_quickBlock(int lda, int M, int N, int K, double* A, double* B, do
 	static double subMatrix[BLOCK_SIZE*BLOCK_SIZE];
 	for (int j = 0; j < K; j++)
 		for (int i = 0; i < M; i++)
-			subMaxrix[i + j * BLOCK_SIZE] = A[i + j * lda];
+			subMatrix[i + j * BLOCK_SIZE] = A[i + j * lda];
 	/* For each row i of A */
 	for (int i = 0; i < M; ++i)
 		/* For each column j of B */
@@ -53,7 +53,7 @@ static void do_quickBlock(int lda, int M, int N, int K, double* A, double* B, do
 			/* Compute C(i,j) */
 			double cij = C[i + j * lda];
 			for (int k = 0; k < K; ++k)
-				cij += subMaxrix[i + k * BLOCK_SIZE] * B[k + j * lda];
+				cij += subMatrix[i + k * BLOCK_SIZE] * B[k + j * lda];
 			C[i + j * lda] = cij;
 
 		}
