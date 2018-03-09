@@ -15,7 +15,7 @@
 
 const char* dgemm_desc = "Simple blocked dgemm.";
 #if !defined(BLOCK_SIZE)
-#define BLOCK_SIZE 41
+#define BLOCK_SIZE 64
 #endif
 
 #define min(a,b) (((a)<(b))?(a):(b))
@@ -25,7 +25,7 @@ const char* dgemm_desc = "Simple blocked dgemm.";
  * where C is M-by-N, A is M-by-K, and B is K-by-N. */
 static void do_block (int lda, int M, int N, int K, double* A, double* B, double* C)
 {
-	static double subMatrix[BLOCK_SIZE*BLOCK_SIZE];
+	
 
 	/* For each row i of A */
     for (int i = 0; i < M; ++i)
@@ -42,21 +42,20 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 
 static void do_quickBlock(int lda, int M, int N, int K, double* A, double* B, double* C) {
 	static double subMatrix[BLOCK_SIZE*BLOCK_SIZE];
-
-	for (int i = 0; i < M; i += 2)
-
+	for (int j = 0; j < K; j++)
+		for (int i = 0; i < M; i++)
+			subMaxrix[i + j * BLOCK_SIZE] = A[i + j * lda];
+	/* For each row i of A */
+	for (int i = 0; i < M; ++i)
 		/* For each column j of B */
-		for (int j = 0; j < N; j += 2)
+		for (int j = 0; j < N; ++j)
 		{
 			/* Compute C(i,j) */
 			double cij = C[i + j * lda];
-
-			for (int k = 0; k < K; k += 2) {
-
-				cij += A[i + k * lda] * B[k + j * lda];
-				cij += A[(i + 1) + k * lda] * B[k + (j + 1)*lda];
-			}
+			for (int k = 0; k < K; ++k)
+				cij += subMaxrix[i + k * BLOCK_SIZE] * B[k + j * lda];
 			C[i + j * lda] = cij;
+
 		}
 }
 
