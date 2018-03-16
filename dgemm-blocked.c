@@ -54,7 +54,7 @@ static void do_quickBlock(int lda, int M, int N, int K, double* A, double* B, do
 			/* Compute C(i,j) */
 			double cij = C[i + j * lda];
 			for (int k = 0; k < K; ++k)
-				cij += subMatrix[i + (k+1) * BLOCK_SIZE] * B[k + j * lda];
+				cij += subMatrix[i + k * BLOCK_SIZE] * B[k + j * lda];
 			C[i + j * lda] = cij;
 
 		}
