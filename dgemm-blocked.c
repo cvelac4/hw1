@@ -27,7 +27,10 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 {
 	
 
-	/* For each row i of A */
+	   //Make a copy of the matrix here. Only a submatrix used for the multiplication. Both matrix A, B and C.
+    //Same submatrix size
+    static double subMatrix[BLOCK_SIZE*BLOCK_SIZE];//MAX size needed
+    /* For each row i of A */
     for (int i = 0; i < M; ++i)
     /* For each column j of B */
         for (int j = 0; j < N; ++j)
@@ -41,23 +44,28 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 }
 
 static void do_quickBlock(int lda, int M, int N, int K, double* A, double* B, double* C) {
-	static double subMatrix[BLOCK_SIZE*BLOCK_SIZE];
-	for (int j = 0; j < K; ++j)
-		for (int i = 0; i < M; ++i)
-			subMatrix[i + j * BLOCK_SIZE] = A[i + j * lda];
+	
+    //Make a copy of the matrix here. Only a submatrix used for the multiplication. Both matrix A, B and C.
+    //Same submatrix size
+    static double subMatrix[BLOCK_SIZE*BLOCK_SIZE];//MAX size needed
+    /* For each row i of A */
 
-	/* For each row i of A */
-	for (int i = 0; i < M; ++i)
-		/* For each column j of B */
-		for (int j = 0; j < N; ++j)
-		{
-			/* Compute C(i,j) */
-			double cij = C[i + j * lda];
-			for (int k = 0; k < K; ++k)
-				cij += subMatrix[i + k * BLOCK_SIZE] * B[k + j * lda];
-			C[i + j * lda] = cij;
 
-		}
+    for (int i = 0; i < M; i+=2)
+
+        /* For each column j of B */
+        for (int j = 0; j < N; j+=2)
+        {
+            /* Compute C(i,j) */
+            double cij = C[i+j*lda];
+
+            for (int k = 0; k < K; k+=2){
+
+                cij += A[i+k*lda] * B[k+j*lda];
+                cij += A[(i+1)+k*lda] * B[k+(j+1)*lda];
+            }
+            C[i+j*lda] = cij;
+        }
 }
 
 /* This routine performs a dgemm operation
