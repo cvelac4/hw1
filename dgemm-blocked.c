@@ -28,13 +28,13 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 	
 
 	/* For each row i of A */
-    for (int i = 0; i < M; +=2)
+    for (int i = 0; i < M; ++i)
     /* For each column j of B */
-        for (int j = 0; j < N; +=2)
+        for (int j = 0; j < N; ++j)
         {
             /* Compute C(i,j) */
             double cij = C[i+j*lda];
-            for (int k = 0; k < K; +=2)
+            for (int k = 0; k < K; ++k)
                 cij += A[i+k*lda] * B[k+j*lda];
             C[i+j*lda] = cij;
         }
