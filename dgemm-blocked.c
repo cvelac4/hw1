@@ -28,13 +28,13 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 	
 
 	/* For each row i of A */
-    for (int i = 0; i < M; ++i)
+    for (int i = 0; i < M; +=2)
     /* For each column j of B */
-        for (int j = 0; j < N; ++j)
+        for (int j = 0; j < N; +=2)
         {
             /* Compute C(i,j) */
             double cij = C[i+j*lda];
-            for (int k = 0; k < K; ++k)
+            for (int k = 0; k < K; +=2)
                 cij += A[i+k*lda] * B[k+j*lda];
             C[i+j*lda] = cij;
         }
@@ -42,8 +42,8 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
 
 static void do_quickBlock(int lda, int M, int N, int K, double* A, double* B, double* C) {
 	static double subMatrix[BLOCK_SIZE*BLOCK_SIZE];
-	for (int j = 0; j < K; j++)
-		for (int i = 0; i < M; i++)
+	for (int j = 0; j < K; ++j)
+		for (int i = 0; i < M; ++i)
 			subMatrix[i + j * BLOCK_SIZE] = A[i + j * lda];
 
 	/* For each row i of A */
