@@ -61,8 +61,8 @@ static void do_quickBlock(int lda, int M, int N, int K, double* A, double* B, do
 
             for (int k = 0; k < K; k+=2){
 
-                cij += A[i+k*lda] * B[k+j*lda];
-                cij += A[(i+1)+k*lda] * B[k+(j+1)*lda];
+                cij += subMatrix[i+k*lda] * B[k+j*lda];
+                cij += subMatrix[(i+1)+k*lda] * B[k+(j+1)*lda];
             }
             C[i+j*lda] = cij;
         }
